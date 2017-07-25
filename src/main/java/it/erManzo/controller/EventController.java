@@ -17,34 +17,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.erManzo.model.Event;
 import it.erManzo.repository.EventRepository;
+import it.erManzo.service.EventService;
 
 @RestController
-@RequestMapping ("/event")
+@RequestMapping("/event")
 public class EventController {
 
 	private final Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private EventRepository eventRepo;
-	
+	@Autowired
+	private EventService eventServ;
+
 	@GetMapping("/getModel")
 	public Event getModel() {
 		System.out.println(LocalDateTime.now());
 		return new Event();
 	}
-	
+
 	@PostMapping("/createEvent")
 	public ResponseEntity<Event> createEvent(@RequestBody Event event) {
 		try {
-			Event saved = eventRepo.save(event);
+			Event saved = new Event();
+			if (eventServ.controllo(event)) {
+				saved = eventRepo.save(event);
+			} else {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
 			return new ResponseEntity<>(saved, HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
+
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Event> deleteEvent(@PathVariable("id") Integer eventId) {
 		try {
@@ -55,7 +62,7 @@ public class EventController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/findOne/{idEvent}")
 	public ResponseEntity<Event> findOne(@PathVariable("idEvent") Integer idEvent) {
 		try {
@@ -66,8 +73,7 @@ public class EventController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
+
 	@GetMapping("/getAllEvent")
 	public ResponseEntity<Iterable<Event>> readAllEvent() {
 		try {

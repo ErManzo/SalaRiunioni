@@ -5,11 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.joda.time.LocalDateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 
 @Entity
 public class Event {
@@ -18,15 +15,16 @@ public class Event {
 	@GeneratedValue
 	private int id;
 	private String title;
-//	@JsonDeserialize(using=LocalDateDeserializer.class)
-//	@DateTimeFormat
-	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd HH:mm")
+	// @JsonDeserialize(using=LocalDateDeserializer.class)
+	// @DateTimeFormat
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime startTime;
-//	@JsonDeserialize(using=LocalDateDeserializer.class)
-//	@DateTimeFormat
-	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd HH:mm")
+	// @JsonDeserialize(using=LocalDateDeserializer.class)
+	// @DateTimeFormat
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime endTime;
 	private boolean allDay;
+	private User user;
 
 	public int getId() {
 		return id;
@@ -68,5 +66,12 @@ public class Event {
 		this.endTime = endTime;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }
