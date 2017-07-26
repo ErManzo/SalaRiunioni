@@ -7,5 +7,7 @@ public interface UserService {
 	User findByUsername(String username);
 	
 	void delete(User user);
+	
+	boolean controlloUnique(User user);
 
 }
