@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		
 		http.httpBasic().and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				.antMatchers("/login", "/register", "/logoutApp", "/getUserModel").permitAll()
+				.antMatchers("/login", "/register", "/logoutApp", "/getUserModel", "/findByUsername/**").permitAll()
 				.antMatchers("/event/getModel", "/event/createEvent/**", "/event/delete/**", "/event/getAllEvent/**")
 				.hasAnyRole("USER", "ADMIN", "DBA").anyRequest()
 				.authenticated().and().logout().permitAll().logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))

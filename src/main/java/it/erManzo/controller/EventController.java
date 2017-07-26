@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.erManzo.model.Event;
+import it.erManzo.model.User;
 import it.erManzo.repository.EventRepository;
 import it.erManzo.service.EventService;
+import it.erManzo.service.UserService;
 
 @RestController
 @RequestMapping("/event")
@@ -30,6 +33,9 @@ public class EventController {
 	@Autowired
 	private EventService eventServ;
 
+	@Autowired
+	private UserService userService;
+
 	@GetMapping("/getModel")
 	public Event getModel() {
 		System.out.println(LocalDateTime.now());
@@ -39,13 +45,17 @@ public class EventController {
 	@PostMapping("/createEvent")
 	public ResponseEntity<Event> createEvent(@RequestBody Event event) {
 		try {
-			Event saved = new Event();
+			org.springframework.security.core.userdetails.User userLogged = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+					.getContext().getAuthentication().getPrincipal();
+			String username = userLogged.getUsername();
+			User user = userService.findByUsername(username);
+			event.setUser(user);
 			if (eventServ.controllo(event)) {
-				saved = eventRepo.save(event);
+				eventRepo.save(event);
 			} else {
 				return new ResponseEntity<>(HttpStatus.CONFLICT);
 			}
-			return new ResponseEntity<>(saved, HttpStatus.CREATED);
+			return new ResponseEntity<>(event, HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

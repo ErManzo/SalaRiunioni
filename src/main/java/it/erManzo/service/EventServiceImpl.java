@@ -21,9 +21,9 @@ public class EventServiceImpl implements EventService {
 		String parseEnd = "";
 		for (Event e : listaEventi) {
 			String giornoSalvato = e.getStartTime().toString().substring(0, 10);
-//			System.out.println("salvato " + giornoSalvato);
+			System.out.println("salvato " + giornoSalvato);
 			String giornoDaSalvare = event.getStartTime().toString().substring(0, 10);
-//			System.out.println("da salvare " + giornoDaSalvare);
+			System.out.println("da salvare " + giornoDaSalvare);
 
 			if (giornoSalvato.equals(giornoDaSalvare)) {
 

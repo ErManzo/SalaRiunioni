@@ -12,12 +12,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.erManzo.model.Event;
 import it.erManzo.model.User;
 import it.erManzo.repository.UserRepository;
 import it.erManzo.security.service.AuthService;
@@ -70,4 +72,16 @@ public class AuthController {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 	}
+	
+	@GetMapping("/findByUsername/{username}")
+	public ResponseEntity<User> findByUsername(@PathVariable("username") String username) {
+		try {
+			User found = userService.findByUsername(username);
+			return new ResponseEntity<>(found, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 }

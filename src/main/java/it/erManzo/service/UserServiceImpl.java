@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 	public boolean controlloUnique(User user) {
 		List<User> listaUser = (List<User>) userRepository.findAll();
 		for (User u : listaUser) {
-			if (user.getUsername().equals(u.getUsername())) {
+			if (user.getUsername().equalsIgnoreCase(u.getUsername())) {
 				return false; // gia' registrato
 			}
 		}
