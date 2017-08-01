@@ -21,11 +21,11 @@ public class EventServiceImpl implements EventService {
 		String parseEnd = "";
 		for (Event e : listaEventi) {
 			String giornoSalvato = e.getStartTime().toString().substring(0, 10);
-			System.out.println("salvato " + giornoSalvato);
+			// System.out.println("salvato " + giornoSalvato);
 			String giornoDaSalvare = event.getStartTime().toString().substring(0, 10);
-			System.out.println("da salvare " + giornoDaSalvare);
+			// System.out.println("da salvare " + giornoDaSalvare);
 
-			if (giornoSalvato.equals(giornoDaSalvare)) {
+			if (giornoSalvato.equals(giornoDaSalvare) && e.getId() != event.getId()) {
 
 				int startSalvato = Integer.parseInt(e.getStartTime().toString().substring(11, 16).replaceAll(":", ""));
 				int startDaSalvare = Integer
@@ -35,7 +35,8 @@ public class EventServiceImpl implements EventService {
 						.parseInt(event.getEndTime().toString().substring(11, 16).replaceAll(":", ""));
 
 				if (startDaSalvare >= startSalvato && startDaSalvare < endSalvato
-						|| endDaSalvare >= startSalvato && endDaSalvare < endSalvato) {
+						|| endDaSalvare > startSalvato && endDaSalvare <= endSalvato
+						|| startDaSalvare <= startSalvato && endDaSalvare >= endSalvato) {
 					return false; // gia' prenotato
 				} else if (e.isAllDay()) {
 					return false; // gia' prenotato

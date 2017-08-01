@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.erManzo.model.Event;
 import it.erManzo.model.User;
+import it.erManzo.model.UserProfileType;
 import it.erManzo.repository.EventRepository;
 import it.erManzo.service.EventService;
 import it.erManzo.service.UserService;
@@ -62,6 +63,30 @@ public class EventController {
 		}
 	}
 
+	
+	@PostMapping("/editEvent")
+	public ResponseEntity<Event> editEvent(@RequestBody Event event) {
+		try {
+			org.springframework.security.core.userdetails.User userLogged = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+					.getContext().getAuthentication().getPrincipal();
+			String username = userLogged.getUsername();
+			User user = userService.findByUsername(username);
+			if (!user.getProfileType().equals(UserProfileType.ROLE_ADMIN)) {
+			event.setUser(user);
+			}
+			if (eventServ.controllo(event)) {
+				eventRepo.save(event);
+			} else {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
+			return new ResponseEntity<>(event, HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Event> deleteEvent(@PathVariable("id") Integer eventId) {
 		try {
